@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Software License Agreement (BSD)
@@ -30,14 +30,14 @@ import rospy
 import novatel_msgs.msg as msg
 
 # Node source
-from translator import Translator
+from novatel_span_driver.translator import Translator
 
 # Python
 import threading
 import socket
 import serial
 import struct
-from cStringIO import StringIO
+from io import BytesIO
 
 
 class Port(threading.Thread):
@@ -67,9 +67,9 @@ class Port(threading.Thread):
             bytes_before_sync = []
             while True:
                 sync = self.sock.recv(1)
-                if sync == "\xAA":
-                    bytes_before_sync = ''.join(bytes_before_sync)
-                    if len(bytes_before_sync) > 0 and not bytes_before_sync.startswith("\r\n<OK"):
+                if sync == b'\xAA':
+                    bytes_before_sync = b''.join(bytes_before_sync)
+                    if len(bytes_before_sync) > 0 and not bytes_before_sync.startswith(b'\r\n<OK'):
                         rospy.logwarn(("Discarded %d bytes between end of previous message " +
                                        "and next sync byte.") % len(bytes_before_sync))
                         rospy.logwarn("Discarded: %s" % repr(bytes_before_sync))
@@ -77,14 +77,14 @@ class Port(threading.Thread):
                 bytes_before_sync.append(sync)
 
             sync = self.sock.recv(1)
-            if sync != "\x44":
-                raise ValueError("Bad sync2 byte, expected 0x44, received 0x%x" % ord(sync[0]))
+            if sync != b'\x44':
+                raise ValueError("Bad sync2 byte, expected 0x44, received 0x%x" % sync[0])
             sync = self.sock.recv(1)
-            if sync != "\x12":
-                raise ValueError("Bad sync3 byte, expected 0x12, received 0x%x" % ord(sync[0]))
+            if sync != b'\x12':
+                raise ValueError("Bad sync3 byte, expected 0x12, received 0x%x" % sync[0])
 
             # Four byte offset to account for 3 sync bytes and one header length byte already consumed.
-            header_length = ord(self.sock.recv(1)[0]) - 4
+            header_length = self.sock.recv(1)[0] - 4
             if header_length != header.translator().size:
                 raise ValueError("Bad header length. Expected %d, got %d" %
                                  (header.translator().size, header_length))
@@ -94,11 +94,11 @@ class Port(threading.Thread):
             return None, None
 
         header_str = self.sock.recv(header_length)
-        header_data = StringIO(header_str)
+        header_data = BytesIO(header_str)
         header.translator().deserialize(header_data)
 
         packet_str = self.sock.recv(header.length)
-        footer_data = StringIO(self.sock.recv(footer.translator().size))
+        footer_data = BytesIO(self.sock.recv(footer.translator().size))
 
         return header, packet_str
 
@@ -106,17 +106,17 @@ class Port(threading.Thread):
         """ Sends a header/msg/footer out the socket. Takes care of computing
         length field for header and checksum field for footer. """
 
-        msg_buff = StringIO()
+        msg_buff = BytesIO()
         message.translator().preserialize()
         message.translator().serialize(msg_buff)
         pad_count = -msg_buff.tell() % 4
-        msg_buff.write("\x00" * pad_count)
+        msg_buff.write(b'\x00' * pad_count)
 
         footer = msg.CommonFooter(end=msg.CommonFooter.END)
         header.length = msg_buff.tell() + footer.translator().size
 
         # Write header and message to main buffer.
-        buff = StringIO()
+        buff = BytesIO()
         header.translator().serialize(buff)
         buff.write(msg_buff.getvalue())
 
@@ -136,7 +136,7 @@ class Port(threading.Thread):
 
     @classmethod
     def _checksum(cls, buff):
-        """ Compute novatel checksum. Expects a StringIO with a
+        """ Compute novatel checksum. Expects a BytesIO with a
       size that is a multiple of four bytes. """
         checksum = 0
 
@@ -147,7 +147,7 @@ class Port(threading.Thread):
                 break
             if len(data) < 4:
                 pad_count = len(data) % 4
-                data = data + "\x00" * pad_count
+                data = data + b'\x00' * pad_count
                 raise ValueError("Checksum data length is not a multiple of 4. %d" % len(data))
             print(data)
             c1, c2 = cls.checksum_struct.unpack(data)

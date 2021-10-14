@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.16.3)
 project(novatel_span_driver)
 
 find_package(catkin REQUIRED COMPONENTS roslaunch roslint rostest)
