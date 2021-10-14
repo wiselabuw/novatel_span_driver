@@ -80,10 +80,10 @@ class NovatelDiagnostics(object):
         if self.last_inspvax:
             if self.last_inspvax.ins_status != INSPVAX.INS_STATUS_SOLUTION_GOOD:
                 stat.summary(DiagnosticStatus.WARN, "INS Solution not GOOD.")
-            elif self.last_inspvax.position_type != INSPVAX.POSITION_TYPE_PPP:
-                stat.summary(DiagnosticStatus.WARN, "INS Position type not PPP.")
+            elif self.last_inspvax.position_type != INSPVAX.POSITION_TYPE_PPP and self.last_inspvax.position_type != INSPVAX.POSITION_TYPE_RTK_FIXED:
+                stat.summary(DiagnosticStatus.WARN, "INS Position type not PPP and not RTK_FIXED.")
             else:
-                stat.summary(DiagnosticStatus.OK, "INS Solution GOOD, PPP fix present.")
+                stat.summary(DiagnosticStatus.OK, "INS Solution GOOD. Position type PPP or RTK_FIXED.")
 
             stat.add("INS Solution Status",
                      self.get_status_string(self.last_inspvax, "ins_status"))
