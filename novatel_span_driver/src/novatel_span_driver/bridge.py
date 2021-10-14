@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Software License Agreement (BSD)
@@ -39,7 +39,7 @@ from novatel_span_driver.monitor import Monitor
 import socket
 import serial
 import struct
-from cStringIO import StringIO
+from io import BytesIO
 import time
 
 from novatel_span_driver import translator
@@ -123,7 +123,7 @@ def create_test_sock(pcap_filename):
     except ImportError:
         import pure_pcapy as pcapy
 
-    from StringIO import StringIO
+    from io import BytesIO
     from impacket import ImpactDecoder
 
     body_list = []
@@ -153,7 +153,7 @@ def create_test_sock(pcap_filename):
             print(decoder.decode(payload))
             raise
 
-    data_io = StringIO(''.join(body_list))
+    data_io = BytesIO(b''.join(body_list))
 
     class MockSocket(object):
 
@@ -177,17 +177,17 @@ def configure_receiver(port):
         imu_connect = receiver_config.get('imu_connect', None)
         if imu_connect is not None:
             rospy.loginfo("Sending IMU connection string to SPAN system.")
-            port.send('connectimu ' + imu_connect['port'] + ' ' + imu_connect['type'] + '\r\n')
+            port.send(b'connectimu ' + imu_connect['port'].encode('latin-1') + b' ' + imu_connect['type'].encode('latin-1') + b'\r\n')
 
         logger = receiver_config.get('log_request', [])
         rospy.loginfo("Enabling %i log outputs from SPAN system." % len(logger))
         for log in logger:
-            port.send('log ' + log + ' ontime ' + str(logger[log]) + '\r\n')
+            port.send(b'log ' + log.encode('latin-1') + b' ontime ' + struct.pack("f", logger[log]) + b'\r\n')
 
         commands = receiver_config.get('command', [])
         rospy.loginfo("Sending %i user-specified initialization commands to SPAN system." % len(commands))
         for cmd in commands:
-            port.send(cmd + ' ' + str(commands[cmd]) + '\r\n')
+            port.send(cmd.encode('latin-1') + b' ' + commands[cmd].encode('latin-1') + b'\r\n')
 
 
 def shutdown():

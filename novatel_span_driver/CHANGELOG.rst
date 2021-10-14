@@ -2,6 +2,15 @@
 Changelog for package novatel_span_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.0 (2021-10-15)
+------------------
+* Migrate to ROS Noetic and Python 3:
+  * use `BytesIO` instead of `StringIO`
+  * use bytes literals
+  * fix imports
+  * use `zip` instead of `izip`
+* Contributors: Michał Antkiewicz <michal.antkiewicz@uwaterloo.ca>
+
 1.1.0 (2018-04-26)
 ------------------
 * Merge pull request `#27 <https://github.com/ros-drivers/novatel_span_driver/issues/27>`_ from michaelhsmart/ellipsoidal_from_orthometric

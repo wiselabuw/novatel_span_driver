@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Software License Agreement (BSD)
@@ -33,8 +33,7 @@ import roslib.msgs
 import genpy
 import rospy
 import struct
-from itertools import izip
-from cStringIO import StringIO
+from io import BytesIO
 
 
 class EndOfBuffer(BaseException):
@@ -89,10 +88,10 @@ class FixedFieldsHandler(Handler):
 
     def deserialize(self, buff, msg):
         st = buff.read(self.struct.size)
-        if st == '':
+        if st == b'':
             return
         values = self.struct.unpack(st)
-        for name, value in izip(self.names, values):
+        for name, value in zip(self.names, values):
             setattr(msg, name, value)
 
 
@@ -110,7 +109,7 @@ class SubMessageArrayHandler(Handler):
         if hasattr(msg, self.name_count):
             # Another field specifies number of array items to deserialize.
             length = getattr(msg, self.name_count) * self.submessage_size
-            data = StringIO(buff.read(length))
+            data = BytesIO(buff.read(length))
         else:
             # Consume as much as we can straight from the buffer.
             data = buff
