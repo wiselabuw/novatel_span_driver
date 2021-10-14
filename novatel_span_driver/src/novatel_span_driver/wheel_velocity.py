@@ -52,7 +52,7 @@ class NovatelWheelVelocity(object):
 
         # Send setup command.
         self.circumference = self.fake_wheel_diameter * pi
-        cmd = 'setwheelparameters %d %f %f' % (
+        cmd = b'setwheelparameters %d %f %f' % (
             self.fake_wheel_ticks,
             self.circumference,
             self.circumference / self.fake_wheel_ticks)
@@ -74,7 +74,7 @@ class NovatelWheelVelocity(object):
             period = (odom.header.stamp - self.last_received_stamp).to_sec()
             self.cumulative_ticks += velocity_ticks * period
 
-            cmd = 'wheelvelocity %d %d %d 0 %f 0 0 %d \r\n' % (
+            cmd = b'wheelvelocity %d %d %d 0 %f 0 0 %d \r\n' % (
                 self.latency,
                 self.fake_wheel_ticks,
                 int(velocity_ticks),
