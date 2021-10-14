@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <package>
   <name>novatel_span_driver</name>
-  <version>1.1.0</version>
+  <version>2.0.0</version>
   <description>Python driver for NovAtel SPAN devices.</description>
 
   <maintainer email="mpurvis@clearpathrobotics.com">Mike Purvis</maintainer>
   <maintainer email="icolwell@gsd.uwaterloo.ca">Ian Colwell</maintainer>
   <maintainer email="jwhitley@autonomoustuff.com">Josh Whitley</maintainer>
+  <maintainer email="michal.antkiewicz@uwaterloo.ca">Michał Antkiewicz</maintainer>
 
   <author email="support@novatel.com">NovAtel Support</author>
 

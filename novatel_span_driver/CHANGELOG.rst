@@ -2,11 +2,11 @@
 Changelog for package novatel_span_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-2.0.0 (2021-10-15)
+2.0.0 (2021-10-14)
 ------------------
 * Migrate to ROS Noetic and Python 3:
   * use `BytesIO` instead of `StringIO`
-  * use bytes literals
+  * use bytes literals `b'...'`
   * fix imports
   * use `zip` instead of `izip`
 * Contributors: Michał Antkiewicz <michal.antkiewicz@uwaterloo.ca>

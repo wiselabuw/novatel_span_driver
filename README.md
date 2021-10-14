@@ -1,9 +1,19 @@
 # novatel_span_driver
 
+Version: 2.0.0
+
 This ROS package connects via Ethernet to a [NovAtel](http://www.novatel.com/) receiver running
 [SPAN](http://www.novatel.com/span).
 
 Please see the ROS Wiki for details: http://wiki.ros.org/novatel_span_driver
+
+DISCLAIMER:
+The driver has reached end-of-life and it is no longer supported by Novatel.
+This repository is "best effort" to provide compatibility with ROS Noetic and Python3
+but the code is provided "AS IS", without any warranties or guarantees of correctness.
+The driver has only been tested with Novatel ProPak6D with NTRIP and in RTK_FIXED mode.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Building and testing
 
