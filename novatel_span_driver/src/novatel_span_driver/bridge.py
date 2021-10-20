@@ -172,22 +172,25 @@ def create_test_sock(pcap_filename):
 
 def configure_receiver(port):
     receiver_config = rospy.get_param('~configuration', None)
-
     if receiver_config is not None:
         imu_connect = receiver_config.get('imu_connect', None)
         if imu_connect is not None:
             rospy.loginfo("Sending IMU connection string to SPAN system.")
-            port.send(b'connectimu ' + imu_connect['port'].encode('latin-1') + b' ' + imu_connect['type'].encode('latin-1') + b'\r\n')
+            port.send(b'connectimu ' + imu_connect['port'].encode('ascii') + b' ' + imu_connect['type'].encode('ascii') + b'\r\n')
 
         logger = receiver_config.get('log_request', [])
         rospy.loginfo("Enabling %i log outputs from SPAN system." % len(logger))
         for log in logger:
-            port.send(b'log ' + log.encode('latin-1') + b' ontime ' + struct.pack("f", logger[log]) + b'\r\n')
+            out = b'log ' + log.encode('ascii') + b' ontime ' + str(logger[log]).encode('ascii') + b'\r\n'
+            rospy.loginfo(out.decode('ascii'))
+            port.send(out)
 
         commands = receiver_config.get('command', [])
         rospy.loginfo("Sending %i user-specified initialization commands to SPAN system." % len(commands))
         for cmd in commands:
-            port.send(cmd.encode('latin-1') + b' ' + commands[cmd].encode('latin-1') + b'\r\n')
+            out = cmd.encode('ascii') + b' ' + commands[cmd].encode('ascii') + b'\r\n'
+            rospy.loginfo(out.decode('ascii'))
+            port.send(out)
 
 
 def shutdown():

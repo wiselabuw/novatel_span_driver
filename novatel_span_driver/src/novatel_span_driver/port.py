@@ -45,7 +45,7 @@ class Port(threading.Thread):
     """ Common base class for DataPort and ControlPort. Provides functionality to
       recv/send novatel-formatted packets from the socket. Could in future
       support LoggingPort and DisplayPort."""
-    checksum_struct = struct.Struct("<hh")
+    checksum_struct = struct.Struct(b'<hh')
 
     def __init__(self, sock, **opts):
         super(Port, self).__init__()

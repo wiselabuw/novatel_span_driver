@@ -58,6 +58,11 @@ class DataPort(Port):
                 header, pkt_str = self.recv()
                 if header is not None:
                     handlers[header.id].handle(BytesIO(pkt_str), header)
+                    if header.id not in pkt_counters:
+                        pkt_counters[header.id] = 0
+                    else:
+                        pkt_counters[header.id] += 1
+                        pkt_times[header.id] = header.gps_week_seconds  # only track times of msgs that are part of novatel msgs
 
             except ValueError as e:
                 # Some problem in the recv() routine.
@@ -72,9 +77,3 @@ class DataPort(Port):
                 if header.id not in bad_pkts:
                     rospy.logwarn("Error parsing %s.%d" % header.id)
                     bad_pkts.add(pkt)
-
-            if header.id not in pkt_counters:
-                pkt_counters[header.id] = 0
-            else:
-                pkt_counters[header.id] += 1
-                pkt_times[header.id] = header.gps_week_seconds  # only track times of msgs that are part of novatel msgs
